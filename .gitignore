@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Production builds
+frontend/dist/
+frontend/build/
+
+# IDE & OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local data cache
+*.log

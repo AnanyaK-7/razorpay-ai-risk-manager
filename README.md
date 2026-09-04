@@ -141,16 +141,6 @@ Open `http://localhost:5173` in your browser.
 
 ---
 
-## Pitch Video Script for Razorpay Buildathon Judges (5 Mins)
-
-1. **0:00 - 0:45**: Introduction & Problem Statement in Indian BFSI/D2C (10 Scam Vectors: Vishing, Phishing APKs, KBC Lottery, Return Fraud, Chargebacks).
-2. **0:45 - 2:00**: Live Operation Dashboard & Real-Time Voice/Text AI Demo — Speaking queries into the browser and receiving spoken AI audio responses.
-3. **2:00 - 3:15**: "The Bar" Held-Out Test Set Page — Demonstrating the threshold slider, 99.28% Precision, 92.07% Recall, and Net Financial Money Saved (INR ₹2.98 Crore).
-4. **3:15 - 4:15**: Chargeback Evidence Auto-Responder — Showcasing instant compilation of Courier POD and 3DS2 logs into downloadable PDF dossiers.
-5. **4:15 - 5:00**: Abuse Ring Sentinel & Conclusion — Visualizing network graph clusters and highlighting defense-only guardrails.
-
----
-
 ## License
 
 Built exclusively for the **Razorpay AI Buildathon 2026**. All rights reserved.

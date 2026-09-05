@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+import { FileCheck, Download, ExternalLink, ShieldCheck, Truck, Lock, FileText, CheckCircle2, AlertTriangle, Layers } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 
 export default function AutoResponder() {

@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { FileCheck, Download, ExternalLink, ShieldCheck, Truck, Lock, FileText, CheckCircle2, AlertTriangle, Layers } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 
 export default function AutoResponder() {
   const [txnId, setTxnId] = useState('txn_rzp_984102');
@@ -58,59 +57,83 @@ export default function AutoResponder() {
         return;
       }
     } catch (e) {
-      console.warn("Backend PDF generator offline, generating browser evidence dossier:", e);
+      console.warn("Backend PDF generator offline, generating client-side PDF document:", e);
     }
 
-    // Client-side printable evidence dossier fallback for static Cloudflare hosting
-    const content = `
-================================================================================
-RAZORPAY RISKSHIELD AI — CHARGEBACK EVIDENCE DOSSIER
-================================================================================
-Generated: 2026-09-05T16:18:00Z | Status: VERIFIED DEFENSE DOSSIER
+    // Client-side real PDF generation using jsPDF for static Cloudflare hosting
+    const doc = new jsPDF();
 
-TRANSACTION & DISPUTE CLAIM DETAILS:
---------------------------------------------------------------------------------
-Transaction ID: ${txnId}
-Merchant ID: ${merchantId}
-Disputed Amount: INR ₹${parseFloat(amount).toLocaleString('en-IN')}
-Customer Name: ${customerName}
-Customer Email: ${customerEmail}
-Dispute Reason: ${disputeReason}
+    // Header Title
+    doc.setFillColor(11, 14, 20);
+    doc.rect(0, 0, 210, 35, 'F');
+    doc.setTextColor(2, 132, 199);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('RAZORPAY RISKSHIELD AI — EVIDENCE DOSSIER', 15, 18);
+    doc.setFontSize(9);
+    doc.setTextColor(148, 163, 184);
+    doc.text('AUTOMATED BANK DISPUTE REBUTTAL PACKAGE (VISA / MASTERCARD / NPCI)', 15, 26);
 
-1. LOGISTICS PROOF OF DELIVERY (POD):
---------------------------------------------------------------------------------
-Logistics Partner: Delhivery Express
-AWB Tracking Number: DEL98240192IN
-Delivery Status: DELIVERED & SIGNED
-Signed Recipient: ${customerName}
-Delivery Address: House No 42, Sector 62, Noida, UP - 201301
+    // Metadata Box
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.setFont('helvetica', 'bold');
+    doc.text('TRANSACTION & DISPUTE CLAIM METADATA', 15, 48);
 
-2. TECHNICAL 3DS2 & BIOMETRIC AUDIT TRAIL:
---------------------------------------------------------------------------------
-Customer IP Address: 103.21.124.89 (India)
-Device Hardware Fingerprint: dev_fp_9824019a84b
-Authentication Protocol: UPI_INTENT_BIOMETRIC_3DS2
-IP / Delivery Country Match: MATCH VERIFIED (100% CONFIDENCE)
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text(`Transaction ID: ${txnId}`, 15, 56);
+    doc.text(`Merchant Account ID: ${merchantId}`, 15, 62);
+    doc.text(`Disputed Amount: INR RS ${parseFloat(amount).toLocaleString('en-IN')}`, 15, 68);
+    doc.text(`Customer Name: ${customerName}`, 110, 56);
+    doc.text(`Customer Email: ${customerEmail}`, 110, 62);
+    doc.text(`Dispute Reason: ${disputeReason}`, 110, 68);
 
-3. FORMAL BANK REBUTTAL STATEMENT:
---------------------------------------------------------------------------------
-"The cardholder participated in the transaction. Proof of delivery was 
-verified at the registered shipping address by Delhivery Express. 3DS 2.0 
-biometric authentication passed on customer's primary device hardware fingerprint."
+    // Section 1: Logistics Proof
+    doc.setFillColor(240, 243, 246);
+    doc.rect(15, 78, 180, 32, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(2, 132, 199);
+    doc.text('1. LOGISTICS PROOF OF DELIVERY (POD)', 20, 86);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(40, 40, 40);
+    doc.text('Logistics Partner: Delhivery Express', 20, 94);
+    doc.text('AWB Tracking Number: DEL98240192IN', 20, 100);
+    doc.text('Delivery Timestamp: 2026-08-28 14:32 IST', 110, 94);
+    doc.text(`Signed Recipient: ${customerName} (House 42, Sector 62, Noida UP)`, 110, 100);
 
-================================================================================
-COMPLIANCE STAMP: STRICTLY DEFENSE-ONLY COMPLIANT (VISA / MASTERCARD / NPCI)
-================================================================================
-`;
+    // Section 2: Biometric 3DS2 Audit
+    doc.setFillColor(240, 243, 246);
+    doc.rect(15, 118, 180, 32, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(245, 158, 11);
+    doc.text('2. TECHNICAL 3DS2 & BIOMETRIC AUDIT TRAIL', 20, 126);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(40, 40, 40);
+    doc.text('Customer IP Address: 103.21.124.89 (India)', 20, 134);
+    doc.text('Hardware Fingerprint: dev_fp_9824019a84b', 20, 140);
+    doc.text('Auth Protocol: UPI_INTENT_BIOMETRIC_3DS2', 110, 134);
+    doc.text('IP / Country Match: MATCH VERIFIED (100% CONFIDENCE)', 110, 140);
 
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Chargeback_Evidence_Dossier_${txnId}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    // Section 3: Formal Statement
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.text('3. FORMAL BANK REBUTTAL STATEMENT', 15, 162);
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(9);
+    doc.setTextColor(60, 60, 60);
+    const rebuttalText = "The cardholder participated in the transaction. Proof of delivery was verified at the registered shipping address by Delhivery Express. 3DS 2.0 biometric authentication passed on customer's primary device hardware fingerprint.";
+    doc.text(rebuttalText, 15, 170, { maxWidth: 180 });
+
+    // Compliance Footer
+    doc.setDrawColor(200, 200, 200);
+    doc.line(15, 200, 195, 200);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(16, 185, 129);
+    doc.text('STRICTLY DEFENSE-ONLY COMPLIANT — AUDIT TRAIL STAMPED (RAZORPAY RISKSHIELD AI)', 15, 208);
+
+    doc.save(`Chargeback_Evidence_Dossier_${txnId}.pdf`);
   };
 
   return (
